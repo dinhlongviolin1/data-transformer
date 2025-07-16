@@ -4,9 +4,14 @@ from typing import Any, Dict, List, Optional
 from pydantic import BaseModel, Field
 
 
+class TransformStep(BaseModel):
+    name: str
+    args: Dict[str, Any] = {}
+
+
 class TransformRequest(BaseModel):
     data: List[Dict[str, Any]]
-    pipeline: List[str]
+    pipeline: List[TransformStep]
 
 
 class TransformConfig(BaseModel):

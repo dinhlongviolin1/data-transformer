@@ -49,8 +49,7 @@ class Transformer:
                     f"Unsupported expected type '{expected_type}' for kwarg '{kwarg_name}'"
                 )
 
-    def __call__(self, df: DataFrame, **kwargs) -> DataFrame:
-        self.validate(df, kwargs)
+    def run(self, df: DataFrame, **kwargs) -> DataFrame:
         return self.func(df, **kwargs)
 
     def get_metadata(self):
