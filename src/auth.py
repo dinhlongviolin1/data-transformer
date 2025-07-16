@@ -6,7 +6,7 @@ from jose import ExpiredSignatureError, JWTError, jwt
 
 from .config import ALGORITHM, SECRET_KEY
 from .db import get_user
-from .models import User
+from .models import User, UserRole
 from .status import InsufficientPermission, InvalidCredentials
 from .utils import get_db
 
@@ -31,7 +31,7 @@ async def get_current_user(
 
 
 async def admin_required(user=Depends(get_current_user)):
-    if user["role"] != "admin":
+    if user.role != UserRole.admin:
         raise InsufficientPermission()
     return user
 

@@ -9,6 +9,10 @@ class TransformRequest(BaseModel):
     pipeline: List[str]
 
 
+class TransformConfig(BaseModel):
+    enabled_transforms: List[str]
+
+
 class UserRole(str, Enum):
     user = "user"
     admin = "admin"

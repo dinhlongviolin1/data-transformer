@@ -1,9 +1,10 @@
+from numpy import sort
 import pandas as pd
-from fastapi import APIRouter, Depends, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Path, Request
 
 from ..auth import admin_required, get_optional_user
-from ..db import get_user_allowed_transforms, set_user_transforms
-from ..models import TransformRequest
+from ..db import get_user, get_user_allowed_transforms, set_user_transforms
+from ..models import TransformConfig, TransformRequest
 from ..utils import get_db, get_registry
 
 router = APIRouter(prefix="/transform", tags=["Transform"])
@@ -46,7 +47,7 @@ async def get_available_transforms(
     username = request_user.username if request_user else None
     allowed = await get_user_allowed_transforms(db, username)
 
-    all_transforms = registry.list_available()
+    all_transforms = sorted(registry.list_available())
 
     return {
         t: {
@@ -57,21 +58,23 @@ async def get_available_transforms(
     }
 
 
-@router.put("/")
+@router.put("/user/{username}")
 async def set_user_transform_config(
-    username: str,
-    transforms: list[str],
     request: Request,
+    config: TransformConfig,
+    username: str = Path(..., description="Username"),
     admin=Depends(admin_required),
 ):
     db = get_db(request)
     registry = get_registry(request)
 
     available = registry.list_available()
-    if invalid := [t for t in transforms if t not in available]:
-        raise HTTPException(
-            status_code=400, detail=f"Invalid transforms: {', '.join(invalid)}"
-        )
+    if invalid := [t for t in config.enabled_transforms if t not in available]:
+        raise HTTPException(status_code=400, detail=f"Invalid transforms: {invalid}")
 
-    await set_user_transforms(db, username, transforms)
+    user = await get_user(db, username)
+    if user is None:
+        raise HTTPException(status_code=400, detail=f"User '{username}' not found")
+
+    await set_user_transforms(db, username, config.enabled_transforms)
     return {"status": "Updated"}
