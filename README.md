@@ -9,7 +9,9 @@ This project is a lightweight and extensible web server that accepts datasets (C
 - Accepts both CSV file uploads and raw JSON data.
 - Supports pluggable transformation pipelines (e.g., filter, rename, uppercase, sort, etc.).
 - Users are authenticated using JWT tokens.
-- Admin users can configure which transformations are available to each user.
+- Admin users can use all pipelines, while regular users can only use transformations that is enabled to them.
+- Unauthenticated (Anonymous) users can only access the default list of available transformations (defined as an environment variable).
+- Admin users can configure which transformations are available to each authenticated user.
 - All transformers are registered in a central registry and validated before execution.
 - MongoDB is used as the backend database.
 - Rate limiting is enforced for all routes.
