@@ -15,7 +15,7 @@ from fastapi import (
 
 from ..auth import admin_required, get_optional_user
 from ..db import get_user, get_user_allowed_transforms, set_user_transforms
-from ..models import TransformConfig, TransformRequest, TransformStep
+from ..models import TransformConfig, TransformRequest, TransformStep, UserRole
 from ..utils import get_db, get_registry
 from .utils import execute_pipeline, safe_dict
 
@@ -113,6 +113,11 @@ async def set_user_transform_config(
     user = await get_user(db, username)
     if user is None:
         raise HTTPException(status_code=400, detail=f"User '{username}' not found")
+
+    if user.role == UserRole.admin:
+        raise HTTPException(
+            status_code=400, detail="User is an admin, cannot modify transforms"
+        )
 
     await set_user_transforms(db, username, config.enabled_transforms)
     return {"status": "Updated"}
