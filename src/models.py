@@ -25,6 +25,6 @@ class UserRole(str, Enum):
 
 class User(BaseModel):
     username: str
-    hashed_password: str  # hashed
+    hashed_password: str
     role: UserRole = UserRole.user
     allowed_transforms: Optional[List[str]] = Field(default_factory=list)
