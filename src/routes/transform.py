@@ -17,7 +17,7 @@ from ..auth import admin_required, get_optional_user
 from ..db import get_user, get_user_allowed_transforms, set_user_transforms
 from ..models import TransformConfig, TransformRequest, TransformStep
 from ..utils import get_db, get_registry
-from .utils import execute_pipeline
+from .utils import execute_pipeline, safe_dict
 
 router = APIRouter(prefix="/transform", tags=["Transform"])
 
@@ -38,7 +38,7 @@ async def transform_json_data(
 
     df = execute_pipeline(request_data.pipeline, df, registry, allowed)
 
-    return {"result": df.to_dict(orient="records")}
+    return {"result": safe_dict(df.to_dict(orient="records"))}
 
 
 @router.post("/file")
@@ -68,7 +68,7 @@ async def transform_file_data(
 
     df = execute_pipeline(pipeline_steps, df, registry, allowed)
 
-    return {"result": df.to_dict(orient="records")}
+    return {"result": safe_dict(df.to_dict(orient="records"))}
 
 
 @router.get("/")

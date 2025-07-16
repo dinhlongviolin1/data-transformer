@@ -98,6 +98,16 @@ def fillna_column(df: DataFrame, **kwargs) -> DataFrame:
     return df.fillna({kwargs["column"]: kwargs["value"]})
 
 
+def sort_dataframe(df: pd.DataFrame, **kwargs) -> pd.DataFrame:
+    by = kwargs["by"]
+    ascending = kwargs.get("ascending", True)
+
+    if isinstance(by, str):
+        by = [by]
+
+    return df.sort_values(by=by, ascending=ascending)
+
+
 # Register built-in transformers
 def register_builtin_transformers(registry: TransformerRegistry):
     registry.register(
@@ -109,7 +119,7 @@ def register_builtin_transformers(registry: TransformerRegistry):
         Transformer(
             func=rename_column,
             required_args=["from", "to"],
-            required_column_types_by_kwarg={"from": "string", "to": "string"},
+            required_column_types_by_kwarg={"from": "string"},
         ),
     )
 
@@ -129,5 +139,13 @@ def register_builtin_transformers(registry: TransformerRegistry):
         Transformer(
             func=fillna_column,
             required_args=["column", "value"],
+        ),
+    )
+
+    registry.register(
+        "sort",
+        Transformer(
+            func=sort_dataframe,
+            required_args=["by", "ascending"],
         ),
     )
