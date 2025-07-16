@@ -96,12 +96,8 @@ Server will run at: <http://localhost:8000>
 - `GET /transform/`  
   Returns list of transformers available to the current user, including required arguments and expected column types.
 
----
-
-### Admin endpoints
-
-- `PUT /users/{user_id}`  
-  Set allowed transformers for a user. Body: `["filter", "rename", "uppercase"]`
+- `PUT /transform/user/{username}`  
+  (Admin user only) Set allowed transformers for a user. Body: `["filter", "rename", "uppercase"]`
 
 ---
 
