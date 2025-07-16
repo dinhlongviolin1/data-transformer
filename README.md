@@ -12,7 +12,7 @@ This project is a lightweight and extensible web server that accepts datasets (C
 - Admin users can configure which transformations are available to each user.
 - All transformers are registered in a central registry and validated before execution.
 - MongoDB is used as the backend database.
-- Rate limiting is enforced for unauthenticated users.
+- Rate limiting is enforced for all routes.
 - Transformers can validate arguments and expected column types in advance.
 - Admin user will be created if there is no previously created admin user.
 
