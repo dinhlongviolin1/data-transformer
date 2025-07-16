@@ -62,9 +62,13 @@ async def transform_file_data(
 
     try:
         pipeline_data = json.loads(pipeline)
+        if not isinstance(pipeline_data, list):
+            raise ValueError("Pipeline must be a list of transformation steps")
         pipeline_steps = [TransformStep(**step) for step in pipeline_data]
-    except Exception:
-        raise HTTPException(status_code=400, detail="Invalid pipeline format.")
+    except Exception as e:
+        raise HTTPException(
+            status_code=400, detail=f"Invalid pipeline format. {str(e)}"
+        )
 
     df = execute_pipeline(pipeline_steps, df, registry, allowed)
 
